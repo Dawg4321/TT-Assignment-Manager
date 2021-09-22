@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include<time.h>
 #include<stdbool.h>
 
 // Global Variables
@@ -24,31 +23,29 @@ int LeapYear(int y){
     return 0;
 }
 
-int CalcDueDays(Date year2){
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
+int CalcDueDays(Date year1, Date year2){
     
     int due_days = 0;
-    int leap1 = LeapYear(tm.tm_year+1900);
+    int leap1 = LeapYear(year1.year);
     int leap2 = LeapYear(year2.year);
 
-    if (year2.year == tm.tm_year+1900){
+    if (year2.year == year1.year){
 
-        int month_difference = year2.month - tm.tm_mon - 1; 
+        int month_difference = year2.month - year1.month; 
             
         if (month_difference == 0)
-            due_days = year2.day - tm.tm_mday;
+            due_days = year2.day - year1.day;
 
         else{
             int remaining_days_in_m = 0;    
 
-            if (month_difference > 0){
-                due_days = g_month_arr[leap2][year2.month -1] + year2.day - tm.tm_mday;
+            if (month_difference > 0){ // month_difference = positive (date is in future)
+                due_days = g_month_arr[leap2][year2.month -1] + year2.day - year1.day;
                 if (month_difference == 1)
                     due_days--; 
             }
-            else
-                due_days = year2.day - g_month_arr[leap1][tm.tm_mday -1] - tm.tm_mday -1;
+            else // month_difference = negative (date is in past)
+                due_days = year2.day - g_month_arr[leap1][year1.day -1] - year1.day -1;
             
             int i = month_difference;
             while (i != 1 && i != -1){
@@ -56,7 +53,6 @@ int CalcDueDays(Date year2){
                     due_days += g_month_arr[leap2][year2.month - 1 + i];
                     i--;
                 }
-                
                 else{
                     due_days -= g_month_arr[leap2][year2.month - 1 + i];
                     i++;
@@ -66,6 +62,7 @@ int CalcDueDays(Date year2){
     }
     else{
         // TODO: Implement year1 != year2 case for day calculation
+        due_days = -111111; // placeholder value to show if incorrect case is met
     }
     
     return due_days;

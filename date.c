@@ -17,12 +17,12 @@ typedef struct Assignment{ // struct to store data relating to each assignment d
 
 // *** Functions ***
 
-// ~~~ LeapYear ~~~~
+// ~~~ LeapYear ~~~
 // Determines whether a year is a leap year. 
 // Pass year to test as int.
 // If LeapYear, return 1
 // If !Leapyear, return 0 
-// ~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~
 int LeapYear(int y){
     if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
         return 1;
@@ -42,32 +42,32 @@ int CalcDueDays(Date year1, Date year2){
     int leap1 = LeapYear(year1.year);
     int leap2 = LeapYear(year2.year);
 
-    if (year2.year == year1.year){
+    int year_difference = year2.year - year1.year;    // get number of years in between date
+    int month_difference = year2.month - year1.month; // get number of months in between dates
+    
+    if (year_difference == 0){
 
-        int month_difference = year2.month - year1.month; 
-            
-        if (month_difference == 0)
+        if (month_difference == 0) // if year2.month == year1.month
             due_days = year2.day - year1.day;
 
-        else{
-            int remaining_days_in_m = 0;    
+        else{   
 
-            if (month_difference > 0){ // month_difference = positive (date is in future)
+            if (month_difference > 0){  // if month_difference = positive (date is in future)
                 due_days = g_month_arr[leap2][year2.month -1] + year2.day - year1.day;
                 if (month_difference == 1)
-                    due_days--; 
+                    due_days--; // subtract additional day as it will be counted twice in while loop
             }
-            else // month_difference = negative (date is in past)
+            else // if month_difference = negative (date is in past)
                 due_days = year2.day - g_month_arr[leap1][year1.day -1] - year1.day -1;
             
             int i = month_difference;
             
-            while (i != 1 && i != -1){ // adds 
-                if (i > 0){
-                    due_days += g_month_arr[leap2][year2.month - 1 + i];
+            while (i != 1 && i != -1){ // iterate through remaining months to add/subtract
+                if (i > 0){ // if month difference positive, add number of days in next month
+                    due_days += g_month_arr[leap2][year2.month - 1 + i]; 
                     i--;
                 }
-                else{
+                else{       // if month difference negative, sub number of days in next month
                     due_days -= g_month_arr[leap2][year2.month - 1 + i];
                     i++;
                 }

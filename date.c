@@ -1,6 +1,3 @@
-#include<stdio.h>
-#include<stdbool.h>
-
 // *** Global Variables ***
 int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, // arr storing num of days in each month of year
                           {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; // [0] = leapless year, [1] = leap year

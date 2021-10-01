@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string.h>
 
-#include "date.c"
+#include "date.h"
 
  bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag);
 

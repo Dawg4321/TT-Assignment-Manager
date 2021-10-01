@@ -1,39 +1,21 @@
-// *** Global Variables ***
-int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, // arr storing num of days in each month of year
-                          {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; // [0] = leapless year, [1] = leap year
-// *** Structs ***
-typedef struct Date{ // struct to store a date
-    int day,month,year;
-}Date;
+#include "date.h"
 
-typedef struct Assignment{ // struct to store data relating to each assignment due
-    struct Date AssDate;
-    int x,y;
-    char z[255];
-}Assignment;
+// *** Global Variables ***
+// assigning num of days to month arrays
+g_month_arr = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, 
+               {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; 
 
 // *** Functions ***
 
-// ~~~ LeapYear ~~~
-// Determines whether a year is a leap year. 
-// Pass year to test as int.
-// If LeapYear, return 1
-// If !Leapyear, return 0 
-// ~~~~~~~~~~~~~~~~
-int LeapYear(int y){
-    if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
-        return 1;
-    return 0;
-}
-
 // ~~~ CalcDueDays ~~~
-// Determines number of days inbetween two dates. Return variable: due_days
+// Return variable: due_days
 // E.g. year2 = 21/12/2021 & year1 = 22/09/21. due_days = 120
 // Other Cases:
 // If year1 > year2, due_days = negative value
 // If year1 == year2, due_days = 0
 // ~~~~~~~~~~~~~~~~~~~
 int CalcDueDays(Date year1, Date year2){
+
     
     int due_days = 0;
     int leap1 = LeapYear(year1.year);
@@ -77,4 +59,24 @@ int CalcDueDays(Date year1, Date year2){
     }
     
     return due_days;
+}
+
+// ~~~ LeapYear ~~~
+// int y = year to test.
+// If y = LeapYear, return 1
+// If y = !Leapyear, return 0
+// E.g. y = 2000, return = 1
+// ~~~~~~~~~~~~~~~~
+int LeapYear(int y){
+    if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
+        return 1;
+    else
+        return 0;
+}
+
+// ~~~ DisplayAssignment ~~~
+// Prints Assignment details to terminal
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+void DiplayAssignment(Assignment A){
+    // TODO: Implement function
 }

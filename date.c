@@ -2,8 +2,8 @@
 
 // *** Global Variables ***
 // assigning num of days to month arrays
-g_month_arr = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, 
-               {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; 
+const int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, 
+                          {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; 
 
 // *** Functions ***
 
@@ -18,6 +18,9 @@ int CalcDueDays(Date year1, Date year2){
 
     
     int due_days = 0;
+
+    // determining whether year 1 and 2 are leap years
+    // LeapYear() returns 1 if leap year
     int leap1 = LeapYear(year1.year);
     int leap2 = LeapYear(year2.year);
 
@@ -75,8 +78,14 @@ int LeapYear(int y){
 }
 
 // ~~~ DisplayAssignment ~~~
-// Prints Assignment details to terminal
+// Pass in assignment to print
+// n_width = width for name output
+// c_width = width for class output
+// function best used in a table of assignments
+// for best results, ensure n_width and c_width are the same accross table output
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
-void DiplayAssignment(Assignment A){
-    // TODO: Implement function
+void DiplayAssignment(Assignment A, int n_width, int c_width){
+        printf("|%*s|%*s|%02d/%02d/%-4d|\n", n_width, A.name,
+                                         c_width, A.class,
+                                         A.AssDate.day, A.AssDate.month, A.AssDate.year);
 }

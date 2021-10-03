@@ -7,12 +7,18 @@
 
 #include "date.h"
 
- bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag);
+// *** Global Variables ***
+const int g_name_buff_size = 25;
+const int g_class_buff_size = 26;
 
+// *** Function  foward declarations ***
+bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag);
+void ListAssignments();
+bool ReadAssignments();
 
-// *** main() ***
+// *** Main ***
 int main(int argc, char **argv){
-// ** Processing CLI Options **
+
     bool lflag, aflag, rflag, hflag; // CLI option flags
     lflag = aflag = rflag = hflag = false;
     char *cvalue, *dvalue, *nvalue; // CLI argument values
@@ -28,6 +34,7 @@ int main(int argc, char **argv){
                 }
                 else{
                     lflag = true;
+                    ListAssignments();
                     break;
                 }
             case 'a': // add assignment option
@@ -56,6 +63,7 @@ int main(int argc, char **argv){
 // *** Functions ***
 
 // ~~~ParseArgs~~~
+// ~~~~~~~~~~~~~~~
  bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag){
 
     // Removing argv[0] before processing args 
@@ -116,3 +124,27 @@ int main(int argc, char **argv){
     }
     return true;  
 }
+
+bool ReadAssignments(){
+    FILE *txtfile;
+    char name[g_name_buff_size], class[g_class_buff_size];
+    int d, m, y;
+
+    txtfile = fopen("assignments.txt","r");
+
+    if (!txtfile){
+        printf("No assignments to list"); // TODO: Implement proper error output
+        return false;
+    }
+
+    while(fscanf(txtfile, "%s %s %d %d %d", name, class, &d, &m, &y) != EOF){
+        printf("%s|%s|%d|%d|%d\n", name, class, d, m, y);
+    }
+
+    return true;
+}
+
+void ListAssignments(){
+    ReadAssignments();
+}
+

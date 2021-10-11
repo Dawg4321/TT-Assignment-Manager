@@ -1,7 +1,9 @@
 #include "date.h"
 
 // *** Global Variables ***
-// assigning num of days to month arrays
+// array containing arrays with the num of days in each month of the year
+// Each slot of outer array corresponds to whether num days is for a leap year 
+// E.g. g_month_arr[0] = leapless year, g_month_arr[1] = leap year
 const int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, 
                           {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; 
 

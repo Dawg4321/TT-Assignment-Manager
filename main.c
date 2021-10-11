@@ -8,8 +8,8 @@
 #include "date.h"
 
 // *** Global Variables ***
-const int g_name_buff_size = 25;
-const int g_class_buff_size = 26;
+const int g_name_buff_size = 25; // maximum name string size
+const int g_class_buff_size = 25; // maximum class string size
 
 // *** Function  foward declarations ***
 bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag);
@@ -125,26 +125,84 @@ int main(int argc, char **argv){
     return true;  
 }
 
-bool ReadAssignments(){
+bool ReadAssignments(Assignment **passed_arr, int *len_arr){
+    
     FILE *txtfile;
-    char name[g_name_buff_size], class[g_class_buff_size];
-    int d, m, y;
-
     txtfile = fopen("assignments.txt","r");
 
-    if (!txtfile){
+    if (!txtfile){ // ensuring txt file exists
         printf("No assignments to list"); // TODO: Implement proper error output
         return false;
     }
+    
+    // preallocating array to hold assignments
+    const int len_assign_arr = 5; //number of assignmnets to preallocate before loading from file 
+    Assignment *assign_arr = malloc(len_assign_arr*sizeof(Assignment));
+    
+    // buffers for txt file transfer
+    Date date_buff; 
+    Assignment assign_buff;
+    char name[g_name_buff_size], class[g_class_buff_size]; // string buffers
+    int d, m, y; // date buffers
 
+    int num_assign = 0; // variable to track number of assignments added to assign_arr
     while(fscanf(txtfile, "%s %s %d %d %d", name, class, &d, &m, &y) != EOF){
-        printf("%s|%s|%d|%d|%d\n", name, class, d, m, y);
+        
+        // assigning assignment values from txt file to buffers
+        date_buff.day = d;
+        date_buff.month = m;
+        date_buff.year = y;        
+        strcpy(assign_buff.name, name);
+        strcpy(assign_buff.class, class);
+        assign_buff.AssDate = date_buff;
+
+         
+        if(num_assign >= len_assign_arr){ // if the number assignments allocated is bigger than the preallocated
+            Assignment *temp_arr = realloc(assign_arr, (num_assign + 1)*sizeof(Assignment));
+            if (temp_arr){ // if realloc successful, transfer array to original copy
+                assign_arr = temp_arr;
+                assign_arr[num_assign] = assign_buff;
+            }
+            else{
+                //TODO: Implement error message for when realloc fail
+                return false;
+            }
+        }
+        else
+            assign_arr[num_assign] = assign_buff; // appending end of assign_arr
+
+        num_assign++; // incrementing num of assignments in arr
     }
+
+    // passing assignments and num of assignments back 
+    *len_arr = num_assign;
+    *passed_arr = assign_arr;
 
     return true;
 }
 
 void ListAssignments(){
-    ReadAssignments();
+    Assignment *assign_arr;
+    int len_assign_arr;
+    
+    if (ReadAssignments(&assign_arr, &len_assign_arr)){
+        
+        char line[] = "-----------------------------------------------";
+
+        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);    
+
+        printf("| # |%25s|%25s|%10s|\n", "Name", "Class", "Due Date");
+
+        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);
+
+        for(int i = 0; i < len_assign_arr; i++){
+            printf("|%03d",i+1);
+            DiplayAssignment(assign_arr[i],g_name_buff_size,g_class_buff_size);
+        }
+        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);
+    }
+
+
+
 }
 

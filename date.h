@@ -4,14 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// *** Global Variables ***
-
-// ~~~ g_month_arr ~~~
-// array containing arrays with the num of days in each month of the year
-// Each slot of outer array corresponds to whether num days is for a leap year 
-// E.g. g_month_arr[0] = leapless year, g_month_arr[1] = leap year
-extern const int g_month_arr[2][12];
-
 // *** Structs ***
 
 // ~~~ Date ~~~
@@ -24,8 +16,8 @@ typedef struct Date{
 // Struct to store data relating to each assignment due
 typedef struct Assignment{
     struct Date AssDate;
-    char *name;
-    char *class;
+    char name[25];
+    char class[25];
 }Assignment;
 
 // *** Functions ***

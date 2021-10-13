@@ -11,7 +11,7 @@ const int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 
 // ~~~ CalcDueDays ~~~
 // Return variable: due_days
-// E.g. year2 = 21/12/2021 & year1 = 22/09/21. due_days = 120
+// E.g. year2 = 21/12/2021 & year1 = 22/09/2021. due_days = 120
 // Other Cases:
 // If year1 > year2, due_days = negative value
 // If year1 == year2, due_days = 0
@@ -87,7 +87,20 @@ int LeapYear(int y){
 // for best results, ensure n_width and c_width are the same accross table output
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 void DiplayAssignment(Assignment A, int n_width, int c_width){
-        printf("|%*s|%*s|%02d/%02d/%-4d|\n", n_width, A.name,
-                                         c_width, A.class,
-                                         A.AssDate.day, A.AssDate.month, A.AssDate.year);
+    // gathering current date from system clock
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
+    // placing current date into Date struct
+    Date d1;
+    d1.month = tm.tm_mon+1;
+    d1.day = tm.tm_mday;
+    d1.year = tm.tm_year+1900;
+    
+    int due_days = CalcDueDays(d1,A.AssDate);
+
+    printf("|%*s|%*s|%02d/%02d/%-4d|%4d|\n", n_width, A.name,
+                                        c_width, A.class,
+                                        A.AssDate.day, A.AssDate.month, A.AssDate.year
+                                        ,due_days);
 }

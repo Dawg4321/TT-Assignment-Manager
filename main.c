@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <getopt.h>
-#include <time.h>
 #include <string.h>
 
 #include "date.h"
@@ -184,25 +183,43 @@ bool ReadAssignments(Assignment **passed_arr, int *len_arr){
 void ListAssignments(){
     Assignment *assign_arr;
     int len_assign_arr;
-    
+
     if (ReadAssignments(&assign_arr, &len_assign_arr)){
-        
+        // titles for assignment list
+        char n_title[] = "Assignment";
+        char c_title[] = "Subject";
+        // gathering lengths of titles
+        int len_name = strlen(n_title);
+        int len_class = strlen(c_title);
+
+        // determining the length of longest name for table fitting
+        // if all names are shorter than title, length of title is used
+        for(int i = 0; i < len_assign_arr; i++){
+            if(strlen(assign_arr[i].name)>len_name)
+                len_name = strlen(assign_arr[i].name);
+            if(strlen(assign_arr[i].class)>len_class)
+                len_class = strlen(assign_arr[i].class);
+        }
+    
         char line[] = "-----------------------------------------------";
+        
+        // printing table title
+        printf("+%.*s+%.*s+%.*s+%.*s+%.*s+\n", 3, line, len_name, line, len_class, line, 10, line, 4, line);   
 
-        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);    
+        printf("| # |%*s|%*s|%10s|%s|\n", len_name, n_title, len_class, c_title, "Due Date ", "#Day");
 
-        printf("| # |%25s|%25s|%10s|\n", "Name", "Class", "Due Date");
+        printf("+%.*s+%.*s+%.*s+%.*s+%.*s+\n", 3, line, len_name, line, len_class, line, 10, line, 4, line);
 
-        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);
-
+        // printing  all assignments 
         for(int i = 0; i < len_assign_arr; i++){
             printf("|%03d",i+1);
-            DiplayAssignment(assign_arr[i],g_name_buff_size,g_class_buff_size);
+            DiplayAssignment(assign_arr[i],len_name,len_class);
         }
-        printf("+%.*s+%.*s+%.*s+%.*s+\n", 3, line, 25, line, 25, line, 10, line);
+        printf("+%.*s+%.*s+%.*s+%.*s+%.*s+\n", 3, line, len_name, line, len_class, line, 10, line, 4, line);   
+    }
+    else{
+        // TODO: Implement error message
     }
 
-
-
+    return;
 }
-

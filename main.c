@@ -13,7 +13,8 @@ const int g_class_buff_size = 25; // maximum class string size
 // *** Function  foward declarations ***
 bool ParseArgs(int argc, char **argv, char **cvalue, char **dvalue, char **nvalue, bool rflag, bool aflag);
 void ListAssignments();
-bool ReadAssignments();
+bool ReadAssignments(Assignment **passed_arr, int *len_arr);
+void AddAssignment();
 
 // *** Main ***
 int main(int argc, char **argv){
@@ -39,7 +40,8 @@ int main(int argc, char **argv){
             case 'a': // add assignment option
                 aflag = true;
                 if(ParseArgs(argc, argv, &cvalue, &dvalue, &nvalue, rflag, aflag));
-                    printf("n=%s\nc=%s\nd=%s\n",nvalue,cvalue,dvalue);
+                    AddAssignment(&nvalue, &cvalue, &dvalue);
+                    
                 break;
             case 'r': // remove assignment option
                 rflag = true;
@@ -124,13 +126,27 @@ int main(int argc, char **argv){
     return true;  
 }
 
+// ~~~ReadAssignments~~~
+// Reads assignments from txt file
+// *VARIABLES*
+// Returns true if assignments read successfully. Any errors cause false to be returned
+// passed_arr = pointer to load assignments into for use in previous frame of reference
+// len_arr = pointer to insert the length of passed_arr for use in previous frame of reference
+// *OPERATION*
+// Function first opens txt file for loading
+// buffer array is preallocated to length of 5. This is because there is not likely to be more than 5 assignments running at once.
+// txt file is then scanned for the data relating to each assignment. buffer array is reallocated accordingly if more than 5 assignments are loaded
+// all information is passed into passed_arr and len_arr 
+// ~~~~~~~~~~~~~~~~~~~~~
 bool ReadAssignments(Assignment **passed_arr, int *len_arr){
     
+    // opening txt file
     FILE *txtfile;
     txtfile = fopen("assignments.txt","r");
 
     if (!txtfile){ // ensuring txt file exists
         printf("No assignments to list"); // TODO: Implement proper error output
+        fclose(txtfile);
         return false;
     }
     
@@ -156,14 +172,18 @@ bool ReadAssignments(Assignment **passed_arr, int *len_arr){
         assign_buff.AssDate = date_buff;
 
          
-        if(num_assign >= len_assign_arr){ // if the number assignments allocated is bigger than the preallocated
+        if(num_assign >= len_assign_arr){ // if the number of the assignment currently being read is bigger than the allocated array
+
+            // copy assignment arr into buffer array with an extra slot
             Assignment *temp_arr = realloc(assign_arr, (num_assign + 1)*sizeof(Assignment));
-            if (temp_arr){ // if realloc successful, transfer array to original copy
+
+            if (temp_arr){ // if realloc successful, transfer buffer to original array
                 assign_arr = temp_arr;
                 assign_arr[num_assign] = assign_buff;
             }
             else{
                 //TODO: Implement error message for when realloc fail
+                fclose(txtfile);
                 return false;
             }
         }
@@ -176,14 +196,26 @@ bool ReadAssignments(Assignment **passed_arr, int *len_arr){
     // passing assignments and num of assignments back 
     *len_arr = num_assign;
     *passed_arr = assign_arr;
-
+    fclose(txtfile);
     return true;
 }
 
+// ~~~ListAssignments~~~
+// Prints all added assignments in a table
+// Table utilises smart column function
+// This means each column is fitted to the longest string in each column
+// *OPERATION*
+// Function first reads assignments using ReadAssignments
+// Then determines the longest name in each table column (class and name)
+// Table is finally outputted using DisplayAssignment from date.h
+// ~~~~~~~~~~~~~~~~~~~~~
 void ListAssignments(){
+    // pointer to list of assignments
     Assignment *assign_arr;
     int len_assign_arr;
 
+    // loading assignments from txt file into assign_arr
+    // if function returns true, assignments loadded successfully
     if (ReadAssignments(&assign_arr, &len_assign_arr)){
         // titles for assignment list
         char n_title[] = "Assignment";
@@ -192,8 +224,9 @@ void ListAssignments(){
         int len_name = strlen(n_title);
         int len_class = strlen(c_title);
 
-        // determining the length of longest name for table fitting
-        // if all names are shorter than title, length of title is used
+        // determining the length of longest name in each category
+        // this is to help detrermine the width of each column in output table
+        // if all names are shorter than title, length of title is used for column
         for(int i = 0; i < len_assign_arr; i++){
             if(strlen(assign_arr[i].name)>len_name)
                 len_name = strlen(assign_arr[i].name);
@@ -217,9 +250,22 @@ void ListAssignments(){
         }
         printf("+%.*s+%.*s+%.*s+%.*s+%.*s+\n", 3, line, len_name, line, len_class, line, 10, line, 4, line);   
     }
-    else{
+    else{ // failed to load assignments from txt with ReadAssignments
         // TODO: Implement error message
     }
 
+    return;
+}
+void AddAssignment(){
+    
+    FILE *txtfile;
+    txtfile = fopen("assignments.txt","r");
+
+    if (!txtfile){ // ensuring txt file exists
+        printf("No assignments to list"); // TODO: Implement proper error output
+        return false;
+    }
+    
+    fclose(txtfile);    
     return;
 }

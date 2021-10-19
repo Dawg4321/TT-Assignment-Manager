@@ -10,7 +10,12 @@ const int g_month_arr[2][12] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 // *** Functions ***
 
 // ~~~ CalcDueDays ~~~
+// Calculates the number of due days inbetween to dates
+// *VARIABLES*
+// year 1 = first date to test
+// year 2 = second date to test
 // Return variable: due_days
+// *OPERATION*
 // E.g. year2 = 21/12/2021 & year1 = 22/09/2021. due_days = 120
 // Other Cases:
 // If year1 > year2, due_days = negative value
@@ -67,7 +72,10 @@ int CalcDueDays(Date year1, Date year2){
 }
 
 // ~~~ LeapYear ~~~
+// determines where year is leap year.
+// *VARIABLES*
 // int y = year to test.
+// *OPERATION*
 // If y = LeapYear, return 1
 // If y = !Leapyear, return 0
 // E.g. y = 2000, return = 1
@@ -81,8 +89,10 @@ int LeapYear(int y){
 
 // ~~~ DisplayAssignment ~~~
 // Pass in assignment to print
+// *VARIABLES*
 // n_width = width for name output
 // c_width = width for class output
+// *OPERATION*
 // function best used in a table of assignments
 // for best results, ensure n_width and c_width are the same accross table output
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
